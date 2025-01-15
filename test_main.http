@@ -1,0 +1,26 @@
+# Test your FastAPI endpoints
+
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/hello/User
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/movies/
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/movies
+Content-Type: application/json
+
+{
+  "title": "Batman Begins",
+  "year": 2005,
+  "director": "Christopher Nolan",
+  "description": ""
+}
