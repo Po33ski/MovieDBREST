@@ -28,23 +28,56 @@ def get_movie(movie_id: int):
 
 @app.post("/movies/", response_model=schemas.Movie)
 def add_movie(movie: schemas.Movie):
-    newMovie = models.Movie.create(title=movie.title, year=movie.year, director=movie.director, description=movie.description)
-    newMovie.save()
     movie = models.Movie.create(**movie.model_dump())
+    return movie
+
+# @app.delete("/movies/{movie_id}", response_model=schemas.Movie)
+# def delete_movie(movie_id: int):
+#     movie = models.Movie.get(models.Movie.id == movie_id)
+#     if movie is None:
+#         raise HTTPException(status_code=404, detail="Movie not found")
+#     movie.delete_instance()
+#     return list(models.Movie.select())
+
+@app.delete("/movies/{movie_id}", response_model=schemas.Movie)
+def delete_movie(movie_id: int):
+    movie = models.Movie.get_or_none(models.Movie.id == movie_id)
+    if movie is None:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    movie.delete_instance()
+    return list(models.Movie.select())
+#newMovie = models.Movie.create(title="Fight Club", year=1999, director="David Fincher", description="")
+
+@app.get("/actors", response_model=List[schemas.Actor])
+def get_actors():
+    return list(models.Actor.select())
+
+@app.get("/actors/{actor_id}", response_model=schemas.Actor)
+def get_actor(actor_id: int):
+    actor = models.Actor.get(models.Actor.id == actor_id)
+    if actor is None:
+        raise HTTPException(status_code=404, detail="Actor not found")
+    return actor
+
+@app.post("/actors/", response_model=schemas.Actor)
+def add_actor(actor: schemas.Actor):
+    newActor = models.Actor.create(**actor.model_dump())
+    return newActor
+
+@app.put("/movies/{movie_id}", response_model=schemas.Movie)
+def update_actor(movie_id: int, actor: schemas.ActorBase):
+    movie = models.Movie.get(models.Movie.id == movie_id)
+    actor = models.Actor.get((models.Actor.name == actor.name) & (models.Actor.surname == actor.surname))
+    if movie is None:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    if actor is None:
+        raise HTTPException(status_code=404, detail="Actor not found")
+    movie.actors.add(actor)
+    movie.save()
     return movie
 
 
 
 
 
-# @app.get("/movies/", response_model=List[schemas.Movie])
-# def get_movies():
-#     list_of_movies = List[models.Movie.select()]
-#     return list_of_movies
-#     for movie in list_of_movies.select():
-#         print(movie.title, movie.year, movie.director, movie.description)
-#         for actor in movie.actor:
-#             print(actor.name, actor.surname)
 
-
-#newMovie = models.Movie.create(title="Fight Club", year=1999, director="David Fincher", description="")
