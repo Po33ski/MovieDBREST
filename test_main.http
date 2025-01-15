@@ -24,3 +24,23 @@ Content-Type: application/json
   "director": "Christopher Nolan",
   "description": ""
 }
+
+###
+
+GET http://127.0.0.1:8000/movies/14
+Content-Type: application/json
+
+###
+
+DELETE http://127.0.0.1:8000/movies/14
+Content-Type: application/json
+
+###
+
+PUT http://127.0.0.1:8000/movies/14
+Content-Type: application/json
+
+{
+  "name": "Roy",
+  "surname": "Scheider"
+}
