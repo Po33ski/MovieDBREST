@@ -1,15 +1,5 @@
 # Test your FastAPI endpoints
 
-GET http://127.0.0.1:8000/
-Accept: application/json
-
-###
-
-GET http://127.0.0.1:8000/hello/User
-Accept: application/json
-
-###
-
 GET http://127.0.0.1:8000/movies/
 Accept: application/json
 
@@ -28,19 +18,44 @@ Content-Type: application/json
 ###
 
 GET http://127.0.0.1:8000/movies/14
-Content-Type: application/json
+Accept: application/json
 
 ###
 
 DELETE http://127.0.0.1:8000/movies/14
-Content-Type: application/json
+Accept: application/json
 
 ###
 
-PUT http://127.0.0.1:8000/movies/14
+GET http://127.0.0.1:8000/actors
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/actors/2
+Accept: application/json
+###
+
+POST http://127.0.0.1:8000/actors
+Content-Type: application/json
+
+{
+  "name": "Bruce",
+  "surname": "Willis"
+}
+###
+
+DELETE http://127.0.0.1:8000/actors/2
+Accept: application/json
+
+
+###
+POST http://127.0.0.1:8000/movies/2/actors
 Content-Type: application/json
 
 {
   "name": "Roy",
   "surname": "Scheider"
 }
+
+

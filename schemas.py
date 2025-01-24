@@ -25,6 +25,7 @@ class Actor(ActorBase):
 
     class Config:
         orm_mode = True
+        getter_dict = PeeweeGetterDict
 
 
 class MovieBase(BaseModel):
