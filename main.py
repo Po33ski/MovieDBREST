@@ -5,49 +5,33 @@ import models
 import schemas
 
 app = FastAPI()
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
+#movies methods:
 @app.get("/movies/", response_model=List[schemas.Movie])
 def get_movies():
     return list(models.Movie.select())
 @app.get("/movies/{movie_id}", response_model=schemas.Movie)
 def get_movie(movie_id: int):
-    movie = models.Movie.get(models.Movie.id == movie_id)
+    #movie = models.Movie.get(models.Movie.id == movie_id)
+    movie = models.Movie.filter(models.Movie.id == movie_id).first()
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     return movie
 
 @app.post("/movies/", response_model=schemas.Movie)
-def add_movie(movie: schemas.Movie):
+def add_movie(movie: schemas.MovieBase):
     movie = models.Movie.create(**movie.model_dump())
     return movie
 
-# @app.delete("/movies/{movie_id}", response_model=schemas.Movie)
-# def delete_movie(movie_id: int):
-#     movie = models.Movie.get(models.Movie.id == movie_id)
-#     if movie is None:
-#         raise HTTPException(status_code=404, detail="Movie not found")
-#     movie.delete_instance()
-#     return list(models.Movie.select())
 
 @app.delete("/movies/{movie_id}", response_model=schemas.Movie)
 def delete_movie(movie_id: int):
-    movie = models.Movie.get_or_none(models.Movie.id == movie_id)
+    movie = models.Movie.filter(models.Movie.id == movie_id).first()
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     movie.delete_instance()
-    return list(models.Movie.select())
-#newMovie = models.Movie.create(title="Fight Club", year=1999, director="David Fincher", description="")
+    return movie
 
+#actors methods:
 @app.get("/actors", response_model=List[schemas.Actor])
 def get_actors():
     return list(models.Actor.select())
@@ -64,9 +48,17 @@ def add_actor(actor: schemas.Actor):
     newActor = models.Actor.create(**actor.model_dump())
     return newActor
 
-@app.put("/movies/{movie_id}", response_model=schemas.Movie)
+@app.delete("/actors/{actor_id}", response_model=schemas.Actor)
+def delete_movie(actor_id: int):
+    actor = models.Actor.filter(models.Actor.id == actor_id).first()
+    if actor is None:
+        raise HTTPException(status_code=404, detail="Actor not found")
+    actor.delete_instance()
+    return actor
+
+@app.post("/movies/{movie_id}/actors", response_model=schemas.Movie)
 def update_actor(movie_id: int, actor: schemas.ActorBase):
-    movie = models.Movie.get(models.Movie.id == movie_id)
+    movie = models.Movie.filter(models.Movie.id == movie_id).first()
     actor = models.Actor.get((models.Actor.name == actor.name) & (models.Actor.surname == actor.surname))
     if movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
